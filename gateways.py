@@ -96,16 +96,14 @@ async def delete_user(
 @protected_router.put('/users/{user_id}')
 async def updateUsers(
     user: UserSchema,
-      user_id: int,
-        authorization: Optional[str] = Depends(get_token)):
+    user_id: int,
+    authorization: Optional[str] = Depends(get_token)):
     headers = {"Authorization": authorization} if authorization else {}
     async with httpx.AsyncClient() as client:
         response= await client.put(f"{USER_SERVICE_PATH}/users/{user_id}", json=user.dict() ,headers=headers)
-        # Si el servicio retorna un error
         if response.status_code >= 400:
             error_data = response.json()
             raise HTTPException(status_code=response.status_code, detail=error_data.get("detail", "Error al actualizar el  usuario"))
-
         return response.json()
 
     
